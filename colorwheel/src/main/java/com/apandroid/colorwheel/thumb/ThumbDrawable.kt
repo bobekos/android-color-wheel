@@ -19,13 +19,15 @@ internal class ThumbDrawable {
     var shadowRadius = 0f
 
     val bounds: RectF
-        get() =
-            RectF(
-                x - radius,
-                y - radius,
-                x + radius,
-                y + radius
+        get() {
+            val fullRadius = (radius + paint.strokeWidth)
+            return RectF(
+                x - fullRadius,
+                y - fullRadius,
+                x + fullRadius,
+                y + fullRadius
             )
+        }
 
     var colorCircleScale = 0f
         set(value) {

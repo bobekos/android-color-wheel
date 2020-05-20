@@ -1,7 +1,8 @@
 package com.apandroid.colorwheel
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Parcel
 import android.os.Parcelable
@@ -9,18 +10,17 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
-
 import com.apandroid.colorwheel.extensions.readBooleanCompat
 import com.apandroid.colorwheel.extensions.writeBooleanCompat
-import com.apandroid.colorwheel.thumb.*
 import com.apandroid.colorwheel.thumb.ThumbDrawable
 import com.apandroid.colorwheel.thumb.ThumbDrawableState
+import com.apandroid.colorwheel.thumb.readThumbState
 import com.apandroid.colorwheel.thumb.writeThumbState
 import com.apandroid.colorwheel.utils.*
-import com.apandroid.colorwheel.utils.HUE_COLORS
-import com.apandroid.colorwheel.utils.toDegrees
-import com.apandroid.colorwheel.utils.toRadians
-import kotlin.math.*
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.hypot
+import kotlin.math.sin
 
 open class ColorWheel @JvmOverloads constructor(
     context: Context,
@@ -184,6 +184,10 @@ open class ColorWheel @JvmOverloads constructor(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
+                if (!isThumbTouched(event)) {
+                    return false
+                }
+
                 parent.requestDisallowInterceptTouchEvent(interceptTouchEvent)
                 updateColorOnMotionEvent(event)
                 motionEventDownX = event.x
@@ -208,6 +212,10 @@ open class ColorWheel @JvmOverloads constructor(
         calculateColor(event)
         fireColorListener()
         invalidate()
+    }
+
+    private fun isThumbTouched(event: MotionEvent) : Boolean {
+        return thumbDrawable.bounds.contains(event.x, event.y)
     }
 
     private fun calculateColor(event: MotionEvent) {

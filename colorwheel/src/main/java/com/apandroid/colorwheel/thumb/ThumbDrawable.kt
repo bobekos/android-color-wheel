@@ -2,6 +2,7 @@ package com.apandroid.colorwheel.thumb
 
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.RectF
 import com.apandroid.colorwheel.utils.ensureNumberWithinRange
 
 internal class ThumbDrawable {
@@ -17,8 +18,19 @@ internal class ThumbDrawable {
     var shadowColor = 0
     var shadowRadius = 0f
 
+    val bounds: RectF
+        get() =
+            RectF(
+                x - radius,
+                y - radius,
+                x + radius,
+                y + radius
+            )
+
     var colorCircleScale = 0f
-        set(value) { field = ensureNumberWithinRange(value, 0f, 1f) }
+        set(value) {
+            field = ensureNumberWithinRange(value, 0f, 1f)
+        }
 
     fun setCoordinates(x: Float, y: Float) {
         this.x = x
